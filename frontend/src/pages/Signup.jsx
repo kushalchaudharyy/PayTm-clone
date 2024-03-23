@@ -4,7 +4,7 @@ import { InputBox } from '../components/InputBox'
 import { Button } from '../components/Button'
 import { BottomWarning } from '../components/BottomWarning'
 import { useNavigate } from 'react-router-dom'
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import axios from 'axios'
 
 const Signup = () => {
@@ -13,6 +13,30 @@ const Signup = () => {
     const [firstName, setFirstname] = useState("")
     const [lastName, setLastname] = useState("")
     const [password, setPassword] = useState("")
+
+    useEffect(()=>{
+        const token = localStorage.getItem('token');
+        if(token == null) {
+            Navigate('/signin') 
+        }
+        
+        else{
+             axios.get('http://localhost:3000/api/v1/user/isValid',{
+                headers:{Authorization : 'Bearer '+ token}
+            }).then((res)=>{
+                console.log(res);
+                if(res.status === 202){
+                    
+                    Navigate('/dashboard') 
+                }
+            })
+            .catch((error)=>{
+                console.log({error : error})
+            }
+            )
+        }
+    },[])
+
     return <div className="bg-slate-300 h-screen flex justify-center">
         <div className="flex flex-col justify-center">
             <div className="rounded-lg bg-white w-80 text-center p-2 h-max px-4">
@@ -30,7 +54,8 @@ const Signup = () => {
                             lastName: lastName,
                             password: password
                         })
-                        localStorage.setItem('token', response.data.token)
+                        const token =response.data.token;
+                        localStorage.setItem('token', token)
                         Navigate('/dashboard')
                     }}> </Button>
                 </div>

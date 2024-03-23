@@ -16,7 +16,7 @@ const signupSchema = zod.object({
     password : zod.string(),
 })
 
-router.post('/signup',async (req, res)=>{
+router.post('/signup', async (req, res)=>{
     const {success} = signupSchema.safeParse(req.body)
     if(!success){
         return res.status(412).json({message:"Invalid credentials", Error :signupSchema.safeParse(body)})
@@ -83,7 +83,7 @@ router.put('/',authMiddleware, async(req, res)=>{
 
     })
 
-    router.get('/bulk', async(req, res)=>{
+    router.get('/bulk',authMiddleware, async(req, res)=>{
     const name = req.query.filter || ""
     const names = await user.find({
         $or: [{
@@ -105,5 +105,9 @@ router.put('/',authMiddleware, async(req, res)=>{
             _id: user._id
         }))
     })
+})
+
+router.get('/isValid', authMiddleware, (req, res)=>{
+    res.sendStatus(202);
 })
 module.exports= router

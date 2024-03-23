@@ -1,10 +1,12 @@
 import { useSearchParams } from "react-router-dom"
 import axios from 'axios'
 import { useState } from "react"
+import { useNavigate } from 'react-router-dom'
 
 const SendMoney = () => {
+    const Navigate = useNavigate()
     const [searchParams] = useSearchParams()
-    const id = searchParams.get("_id")
+    const id = searchParams.get("id")
     const name = searchParams.get("name")
     const [amount, setAmount] = useState()
     return <div className="flex justify-center h-screen bg-gray-100">
@@ -39,6 +41,8 @@ const SendMoney = () => {
                     </div>
                     <button onClick={async ()=>{
                         try{
+                            console.log({to : id})
+                            console.log({amount : amount})
                         await axios.post('http://localhost:3000/api/v1/account/transfer',{
                             to: id,
                             amount : amount
@@ -47,6 +51,8 @@ const SendMoney = () => {
                                 Authorization : "Bearer " + localStorage.getItem('token')
                             }
                         })
+                        Navigate("/dashboard")
+
                     }
                     catch(error){
                             console.log("Error", error)

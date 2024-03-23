@@ -25,6 +25,10 @@ function App() {
       path: '/send',
       element: <SendMoney />
     },
+    {
+      path: '/*',
+      element: <Signup />
+    }
   ])
 
   return (
